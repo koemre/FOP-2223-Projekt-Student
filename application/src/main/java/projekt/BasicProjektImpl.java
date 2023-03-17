@@ -8,11 +8,7 @@ import projekt.delivery.archetype.ProblemGroup;
 import projekt.delivery.archetype.ProblemGroupImpl;
 import projekt.delivery.generator.FridayOrderGenerator;
 import projekt.delivery.generator.OrderGenerator;
-import projekt.delivery.rating.AmountDeliveredRater;
-import projekt.delivery.rating.InTimeRater;
-import projekt.delivery.rating.Rater;
-import projekt.delivery.rating.RatingCriteria;
-import projekt.delivery.rating.TravelDistanceRater;
+import projekt.delivery.rating.*;
 import projekt.delivery.routing.DijkstraPathCalculator;
 import projekt.delivery.routing.Region;
 import projekt.delivery.routing.VehicleManager;
@@ -144,7 +140,7 @@ public class BasicProjektImpl implements Projekt {
         OrderGenerator.Factory orderGeneratorFactory1 = FridayOrderGenerator.Factory.builder()
             .setOrderCount(200)
             .setDeliveryInterval(15)
-            .setStandardDeviation(0.5)
+            .setVariance(0.5)
             .setMaxWeight(0.5)
             .setVehicleManager(vehicleManager1)
             .setLastTick(400)
@@ -153,7 +149,7 @@ public class BasicProjektImpl implements Projekt {
         OrderGenerator.Factory orderGeneratorFactory2 = FridayOrderGenerator.Factory.builder()
             .setOrderCount(200)
             .setDeliveryInterval(15)
-            .setStandardDeviation(0.5)
+            .setVariance(0.5)
             .setMaxWeight(0.5)
             .setVehicleManager(vehicleManager2)
             .setLastTick(400)

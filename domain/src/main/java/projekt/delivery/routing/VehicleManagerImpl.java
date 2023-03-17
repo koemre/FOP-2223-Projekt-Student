@@ -30,16 +30,38 @@ class VehicleManagerImpl implements VehicleManager {
         occupiedEdges = toOccupiedEdges(region.getEdges());
     }
 
-    private Map<Region.Node, OccupiedNodeImpl<? extends Region.Node>> toOccupiedNodes(Collection<Region.Node> nodes) {
-        return crash(); // TODO: H6.1 - remove if implemented
+    private Map<Region.Node, OccupiedNodeImpl<? extends Region.Node>> toOccupiedNodes(Collection<Region.Node> nodes) { // TODO: H6.1 - remove if implemented
+            Map<Region.Node, OccupiedNodeImpl<? extends Region.Node>> occupiedNodes = new HashMap<>();
+            for (Region.Node node : nodes) {
+                if (node instanceof Region.Restaurant restaurant) {
+                    occupiedNodes.put(node,new OccupiedRestaurantImpl(restaurant,this));
+                } else if (node instanceof Region.Neighborhood neighborhood) {
+                    OccupiedNodeImpl<Region.Neighborhood> occupiedNode = new OccupiedNeighborhoodImpl(neighborhood, this);
+                    occupiedNodes.put(node, occupiedNode);
+                } else {
+                    OccupiedNodeImpl<?> occupiedNode = new OccupiedNodeImpl<>(node, this);
+                    occupiedNodes.put(node, occupiedNode);
+                }
+            }
+            return Collections.unmodifiableMap(occupiedNodes);
     }
 
-    private Map<Region.Edge, OccupiedEdgeImpl> toOccupiedEdges(Collection<Region.Edge> edges) {
-        return crash(); // TODO: H6.1 - remove if implemented
+    private Map<Region.Edge, OccupiedEdgeImpl> toOccupiedEdges(Collection<Region.Edge> edges) { // TODO: H6.1 - remove if implemented
+        Map<Region.Edge, OccupiedEdgeImpl> occupiedEdges = new HashMap<>();
+        for (Region.Edge edge : edges) {
+            OccupiedEdgeImpl occupiedEdge = new OccupiedEdgeImpl(edge, this);
+            occupiedEdges.put(edge, occupiedEdge);
+        }
+        return Collections.unmodifiableMap(occupiedEdges);
     }
 
-    private Set<AbstractOccupied<?>> getAllOccupied() {
-        return crash(); // TODO: H6.2 - remove if implemented
+    private Set<AbstractOccupied<?>> getAllOccupied() { // TODO: H6.2 - remove if implemented
+
+        Set<AbstractOccupied<?>> set = new HashSet<>();
+        set.addAll(occupiedEdges.values());
+        set.addAll(occupiedNodes.values());
+        return set;
+
     }
 
     private OccupiedNodeImpl<? extends Region.Node> getOccupiedNode(Location location) {
@@ -72,8 +94,28 @@ class VehicleManagerImpl implements VehicleManager {
     }
 
     @Override
-    public <C extends Region.Component<C>> AbstractOccupied<C> getOccupied(C component) {
-        return crash(); // TODO: H6.3 - remove if implemented
+    public <C extends Region.Component<C>> AbstractOccupied<C> getOccupied(C component) { // TODO: H6.3 - remove if implemented
+        if (component == null) {
+            throw new NullPointerException("Component is null!");
+        }
+
+        if (component instanceof Region.Node) {
+            Region.Node node = (Region.Node) component;
+            if (occupiedNodes.containsKey(node)) {
+                return (AbstractOccupied<C>) occupiedNodes.get(node);
+            } else {
+                throw new IllegalArgumentException("Could not find occupied node for " + component);
+            }
+        } else if (component instanceof Region.Edge) {
+            Region.Edge edge = (Region.Edge) component;
+            if (occupiedEdges.containsKey(edge)) {
+                return (AbstractOccupied<C>) occupiedEdges.get(edge);
+            } else {
+                throw new IllegalArgumentException("Could not find occupied edge for " + component);
+            }
+        } else {
+            throw new IllegalArgumentException("Component is not of recognized subtype: " + component.getClass().getName());
+        }
     }
 
     @Override
@@ -85,8 +127,14 @@ class VehicleManagerImpl implements VehicleManager {
     }
 
     @Override
-    public OccupiedRestaurant getOccupiedRestaurant(Region.Node node) {
-        return crash(); // TODO: H6.4- remove if implemented
+    public OccupiedRestaurant getOccupiedRestaurant(Region.Node node) { // TODO: H6.4- remove if implemented
+        if (node == null) {
+            throw new NullPointerException("Node is null!");
+        }
+        if(occupiedNodes.get(node) instanceof OccupiedRestaurant){
+            return (OccupiedRestaurant) occupiedNodes.get(node);
+        }
+        throw new IllegalArgumentException("Node " + node + " is not a restaurant");
     }
 
     @Override
@@ -98,8 +146,14 @@ class VehicleManagerImpl implements VehicleManager {
     }
 
     @Override
-    public OccupiedNeighborhood getOccupiedNeighborhood(Region.Node node) {
-        return crash(); // TODO: H6.4 - remove if implemented
+    public OccupiedNeighborhood getOccupiedNeighborhood(Region.Node node) { // TODO: H6.4 - remove if implemented
+        if (node == null) {
+            throw new NullPointerException("Node is null!");
+        }
+        if(occupiedNodes.get(node) instanceof OccupiedNeighborhood){
+            return (OccupiedNeighborhood) occupiedNodes.get(node);
+        }
+            throw new IllegalArgumentException("Node " + node + " is not a neighborhood");
     }
 
     @Override

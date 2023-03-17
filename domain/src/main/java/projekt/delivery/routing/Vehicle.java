@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
-import static org.tudalgo.algoutils.student.Student.crash;
+
 
 public interface Vehicle extends Comparable<Vehicle> {
 
@@ -95,8 +95,12 @@ public interface Vehicle extends Comparable<Vehicle> {
      * Returns the total weight of all {@link ConfirmedOrder}s loaded onto this {@link Vehicle}.
      * @return The total weight of all {@link ConfirmedOrder}s loaded onto this {@link Vehicle}.
      */
-    default double getCurrentWeight() {
-        return crash(); // TODO: H5.1 - remove if implemented
+    default double getCurrentWeight() { //H5.1
+        double currentWeight = 0.0;
+        for (ConfirmedOrder order : getOrders()) {
+            currentWeight += order.getWeight();
+        }
+        return currentWeight;
     }
 
     /**

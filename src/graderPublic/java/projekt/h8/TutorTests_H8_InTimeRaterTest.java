@@ -275,7 +275,7 @@ public class TutorTests_H8_InTimeRaterTest {
             OrderReceivedEvent.of(1, order4),
             DeliverOrderEvent.of(1, vehicle, neighborhood, order1),
             DeliverOrderEvent.of(1, vehicle, neighborhood, order2)
-        ), 1);
+        ), 11);
 
         order3.setActualDeliveryTick(10);
         order4.setActualDeliveryTick(10);
@@ -313,7 +313,7 @@ public class TutorTests_H8_InTimeRaterTest {
         inTimeRate.onTick(List.of(
             OrderReceivedEvent.of(0, order1),
             OrderReceivedEvent.of(0, order2),
-            OrderReceivedEvent.of(0, order3)
+            OrderReceivedEvent.of(4, order3)
         ), 0);
 
         order3.setActualDeliveryTick(1);
@@ -330,7 +330,7 @@ public class TutorTests_H8_InTimeRaterTest {
             OrderReceivedEvent.of(4, order5),
             DeliverOrderEvent.of(4, vehicle, neighborhood, order1),
             DeliverOrderEvent.of(4, vehicle, neighborhood, order2)
-        ), 4);
+        ), 7);
 
         order4.setActualDeliveryTick(27);
         order5.setActualDeliveryTick(27);

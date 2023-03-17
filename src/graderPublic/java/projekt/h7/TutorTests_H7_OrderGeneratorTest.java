@@ -98,7 +98,7 @@ public class TutorTests_H7_OrderGeneratorTest {
         generator = FridayOrderGenerator.Factory.builder()
             .setOrderCount(orderCount)
             .setMaxWeight(maxWeight)
-            .setStandardDeviation(variance)
+            .setVariance(variance)
             .setLastTick(lastTick)
             .setDeliveryInterval(deliveryInterval)
             .setSeed(seed)
@@ -158,11 +158,11 @@ public class TutorTests_H7_OrderGeneratorTest {
 
         int fails = 0;
 
-        for (int k = 0; k < 250; k++) {
+        for (int k = 0; k < 1000; k++) {
             generator = FridayOrderGenerator.Factory.builder()
                 .setDeliveryInterval(1)
                 .setLastTick(50)
-                .setStandardDeviation(0.25)
+                .setVariance(0.25)
                 .setOrderCount(500)
                 .setSeed(-1)
                 .setVehicleManager(vehicleManager)

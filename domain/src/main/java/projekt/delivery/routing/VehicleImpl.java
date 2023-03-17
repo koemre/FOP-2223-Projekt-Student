@@ -5,7 +5,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 import java.util.function.BiConsumer;
 
-import static org.tudalgo.algoutils.student.Student.crash;
 
 class VehicleImpl implements Vehicle {
 
@@ -50,13 +49,38 @@ class VehicleImpl implements Vehicle {
     }
 
     @Override
-    public void moveDirect(Region.Node node, BiConsumer<? super Vehicle, Long> arrivalAction) {
-        crash(); // TODO: H5.4 - remove if implemented
+    public void moveDirect(Region.Node node, BiConsumer<? super Vehicle, Long> arrivalAction) { // H5.4
+        if (node == occupied.getComponent()) {
+            throw new IllegalArgumentException("Cannot move to own node");
+        }
+        // check if vehicle is currently on a node
+        if (occupied instanceof OccupiedEdgeImpl) {
+            Region.Edge currentEdge = ((OccupiedEdgeImpl) occupied).getComponent();
+            Region.Node nodeA = currentEdge.getNodeA();
+            Region.Node nodeB = currentEdge.getNodeB();
+            Region.Node nextInPath = moveQueue.getFirst().nodes.getFirst();
+            if (nodeA.equals(nextInPath)) {
+                moveQueue.clear();
+                moveQueue.add(new PathImpl(vehicleManager.getPathCalculator().getPath(nodeB, nodeA), null));
+            } else {
+                moveQueue.clear();
+                moveQueue.add(new PathImpl(vehicleManager.getPathCalculator().getPath(nodeA, nodeB), null));
+            }
+            // add the remaining path to the old destination to the moveQueue
+        } else {
+            moveQueue.clear();
+        }
+        moveQueued(node, arrivalAction);
     }
 
     @Override
-    public void moveQueued(Region.Node node, BiConsumer<? super Vehicle, Long> arrivalAction) {
-        crash(); // TODO: H5.3 - remove if implemented
+    public void moveQueued(Region.Node node, BiConsumer<? super Vehicle, Long> arrivalAction) {  //H5.3
+        checkMoveToNode(node);
+
+        PathImpl lastPath = moveQueue.peek();
+        Region.Node lastNode = lastPath != null ? moveQueue.getLast().nodes.getLast() : (NodeImpl) occupied.getComponent();
+        PathImpl newPath = new PathImpl(vehicleManager.getPathCalculator().getPath(lastNode, node), arrivalAction);
+        moveQueue.add(newPath);
     }
 
     @Override
@@ -124,12 +148,18 @@ class VehicleImpl implements Vehicle {
         }
     }
 
-    void loadOrder(ConfirmedOrder order) {
-        crash(); // TODO: H5.2 - remove if implemented
+    void loadOrder(ConfirmedOrder order) { //H5.2
+        if (order.getWeight() + getCurrentWeight() > capacity) {
+            throw new VehicleOverloadedException(this, order.getWeight() + getCurrentWeight());
+        }
+        orders.add(order);
+
     }
 
-    void unloadOrder(ConfirmedOrder order) {
-        crash(); // TODO: H5.2 - remove if implemented
+    void unloadOrder(ConfirmedOrder order) { //H5.2
+        if (orders.remove(order)) {
+            orders.remove(order);
+        }
     }
 
     @Override

@@ -70,22 +70,40 @@ public final class Location implements Comparable<Location> {
     }
 
     @Override
-    public int compareTo(@NotNull Location o) {
-        return crash(); // TODO: H1.1 - remove if implemented
+    public int compareTo(@NotNull Location o) { // TODO: H1.1 - remove if implemented
+        if (this.x == o.x && this.y == o.y) {
+            return 0;
+        } else if (this.x < o.x || (this.x == o.x && this.y < o.y)) {
+            return -1;
+        } else {
+            return 1;
+        }
+
     }
 
     @Override
-    public int hashCode() {
-        return crash(); // TODO: H1.2 - remove if implemented
+    public int hashCode() { //H1.2
+        return x * 100000 + y;
+    }
+
+    // Implementieren Sie die Funktion public boolean equals(Object o) der Klasse Location, welche das gegebene Objekt
+    // o mit this auf Objektgleichheit überprüft und das Resultat zurückliefert.
+    // Zwei Objekte l1, l2 des Typs Location werden als objektgleich bezeichnet,
+    // wenn die Koordinaten dieser übereinstimmen. Im Fall, dass o null oder nicht
+    // vom Typ Location ist, soll false geliefert werden.
+    @Override
+    public boolean equals(Object o) { // TODO: H1.3 - remove if implemented
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Location other = (Location) o;
+        return (this.x == other.x && this.y == other.y);
+
+
     }
 
     @Override
-    public boolean equals(Object o) {
-        return crash(); // TODO: H1.3 - remove if implemented
-    }
-
-    @Override
-    public String toString() {
-        return crash(); // TODO: H1.4 - remove if implemented
+    public String toString() { // TODO: H1.4 - remove if implemented
+        return "(" + x + "," + y + ")";
     }
 }
